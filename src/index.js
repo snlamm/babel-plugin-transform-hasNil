@@ -22,7 +22,7 @@ const hasNilWrapper = template(`
 				}
 
 				parts = [ ]
-				return false
+				return (result === null) || (typeof result === \'undefined\')
 			}, {
 				get: function(object, property) {
 					parts.push(property)
@@ -96,26 +96,52 @@ export default function() {
 							}
 						}
 
-						if(!/.name$/.test(key) || /arguments/.test(key) || object[key] === 'hasNil') {
+						const isNotNameOrRawValue = !/.name$/.test(key) && !/.extra.raw$/.test(key)
+
+						if(isNotNameOrRawValue || /arguments/.test(key) || object[key] === 'hasNil') {
+							return
+						}
+
+						// Handle literals in brackets, such as an array index
+						if(/.extra.raw$/.test(key)) {
+							const valueType = _get(node, key.replace(/.extra.raw$/, '.type'), null)
+							const isComputed = _get(node, key.replace(/.property.extra.raw$/, '.computed'), null)
+
+							if(!/Literal/.test(valueType) || !isComputed) { return }
+							if(name.slice(-1) === '.') { name = name.slice(0, -1) }
+
+							name += `[${object[key]}].`
 							return
 						}
 
 						const keyObject = _get(node, key.replace(/\.property\.name$/, ''), null)
 						const keyArguments = _get(node, key.replace(/\.callee.property\.name$/, '.arguments'), null)
 
+						const getArguments = keyArguments => {
+							const args = keyArguments.map(arg => {
+								const raw = (arg.extra || { }).raw
+
+								if(arg.type === 'NullLiteral') {
+									return 'null'
+								}
+
+								return (raw || arg.value || arg.name)
+							})
+
+							return args.length === 0 ? '()' : `(...${args})`
+						}
+
 						if(base === '') {
-							base += object[key]
+							const args = _get(node, key.replace(/\.callee\.name$/, '.arguments'), null)
+
+							base += (Array.isArray(args) ? `${object[key]}${getArguments(args)}` : object[key])
 						} else if(keyObject.computed) {
 							if(name.slice(-1) === '.') { name = name.slice(0, -1) }
-
 							name += `[${object[key]}].`
 						} else if(Array.isArray(keyArguments)) {
 							if(name.slice(-1) === '.') { name = name.slice(0, -1) }
 
-							const args = keyArguments.map(arg => arg.value)
-							const argExpression = args.length === 0 ? '()' : `(...${args})`
-
-							name += `[${object[key]}${argExpression}].`
+							name += `[${object[key]}${getArguments(keyArguments)}].`
 						} else {
 							name += `${object[key]}.`
 						}
@@ -128,6 +154,7 @@ export default function() {
 					if(name !== '' && (name.slice(0, 1) !== '[')) {
 						name = `.${name}`
 					}
+
 					/* eslint no-void: 0 */
 					path.replaceWithSourceString(`${hasNilWrapper}(${base})${name}()`)
 				}
