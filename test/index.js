@@ -17,6 +17,7 @@ const helper = "var _hasNilWrapper = function _hasNilWrapper(base) { var parts =
 
 const consumableArray = 'function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }'
 
+// some of the non-Complex tests are modified from https://github.com/MaxMEllon/babel-plugin-transform-isNil/blob/master/test/index.js
 const specs = [
 	{
 		description: 'expect hasNil replace to `=== null || === void 0`',
@@ -54,6 +55,11 @@ const specs = [
 		description: 'Function call test 4',
 		before: 'foo.bar(null).bar(undefined).hasNil',
 		after: `${consumableArray}\n\n_hasNilWrapper(foo)[bar.apply(undefined, _toConsumableArray(null))][bar.apply(undefined, _toConsumableArray(undefined))]()`
+	},
+	{
+		description: 'Function call test 5',
+		before: 'bar[hoge()].foo().hasNil',
+		after: '_hasNilWrapper(bar)[hoge()][foo()]()'
 	},
 	{
 		description: 'Array test 1',

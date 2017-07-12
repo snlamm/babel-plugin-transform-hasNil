@@ -36,7 +36,7 @@ const hasNilWrapper = template(`
 	`)
 
 function addHasNilHelper() {
-	// Modified from https://github.com/babel/babel/blob/master/packages/babel-core/src/transformation/file/index.js#L280
+	// Modified from https://github.com/MaxMEllon/babel-plugin-transform-isNil/blob/master/src/index.js, itself modified from https://github.com/babel/babel/blob/master/packages/babel-core/src/transformation/file/index.js#L280
 
 	const name = 'hasNilWrapper'
 
@@ -102,7 +102,7 @@ export default function() {
 							return
 						}
 
-						// Handle literals in brackets, such as an array index
+						// Handle literals such as an array index
 						if(/.extra.raw$/.test(key)) {
 							const valueType = _get(node, key.replace(/.extra.raw$/, '.type'), null)
 							const isComputed = _get(node, key.replace(/.property.extra.raw$/, '.computed'), null)
@@ -114,8 +114,17 @@ export default function() {
 							return
 						}
 
-						const keyObject = _get(node, key.replace(/\.property\.name$/, ''), null)
-						const keyArguments = _get(node, key.replace(/\.callee.property\.name$/, '.arguments'), null)
+						let keyObject = null
+						let keyArguments = null
+
+						if(/\.callee\.name$/.test(key)) {
+							// handle function inside of brackets
+							keyObject = _get(node, key.replace(/\.property\.callee\.name$/, ''), null)
+							keyArguments = _get(node, key.replace(/\.callee\.name$/, '.arguments'), null)
+						} else {
+							keyObject = _get(node, key.replace(/\.property\.name$/, ''), null)
+							keyArguments = _get(node, key.replace(/\.callee\.property\.name$/, '.arguments'), null)
+						}
 
 						const getArguments = keyArguments => {
 							const args = keyArguments.map(arg => {
@@ -137,7 +146,9 @@ export default function() {
 							base += (Array.isArray(args) ? `${object[key]}${getArguments(args)}` : object[key])
 						} else if(keyObject.computed) {
 							if(name.slice(-1) === '.') { name = name.slice(0, -1) }
-							name += `[${object[key]}].`
+
+							// eslint-disable-next-line max-len
+							name += (Array.isArray(keyArguments) ? `[${object[key]}${getArguments(keyArguments)}].` : `[${object[key]}].`)
 						} else if(Array.isArray(keyArguments)) {
 							if(name.slice(-1) === '.') { name = name.slice(0, -1) }
 
