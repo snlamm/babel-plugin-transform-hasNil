@@ -3,6 +3,10 @@
 	"version": "0.1.0",
 	"description": "use hasNil to traverse chained object properties and check for null or undefined values",
 	"main": "src/index.js",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/snlamm/babel-plugin-transform-hasNil.git"
+	},
 	"author": "Shmuel Lamm (@snlamm)",
 	"license": "MIT",
 	"devDependencies": {
@@ -19,6 +23,16 @@
 		"flat": "^2.0.1",
 		"lodash.get": "^4.4.2"
 	},
+	"keywords": [
+		"hasNil",
+		"babel",
+		"plugin",
+		"null",
+		"undefined",
+		"object",
+		"properties",
+		"traverse"
+	],
 	"scripts": {
 		"prepublish": "bin/build",
 		"lint": "eslint src",

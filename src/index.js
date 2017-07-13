@@ -86,87 +86,89 @@ export default function() {
 				let name = ''
 				let base = ''
 
-				if(property.name === 'hasNil' && path.parentPath.type !== 'CallExpression') {
-					const object = flatten(node)
+				if(property.name !== 'hasNil' || path.parentPath.type === 'CallExpression') {
+					return
+				}
 
-					Object.keys(object).forEach(key => {
-						if(/.type$/.test(key)) {
-							if(object[key] === 'ThisExpression') {
-								base === '' ? base += 'this' : name += 'this.'
-							}
+				const object = flatten(node)
+
+				Object.keys(object).forEach(key => {
+					if(/.type$/.test(key)) {
+						if(object[key] === 'ThisExpression') {
+							base === '' ? base += 'this' : name += 'this.'
 						}
-
-						const isNotNameOrRawValue = !/.name$/.test(key) && !/.extra.raw$/.test(key)
-
-						if(isNotNameOrRawValue || /arguments/.test(key) || object[key] === 'hasNil') {
-							return
-						}
-
-						// Handle literals such as an array index
-						if(/.extra.raw$/.test(key)) {
-							const valueType = _get(node, key.replace(/.extra.raw$/, '.type'), null)
-							const isComputed = _get(node, key.replace(/.property.extra.raw$/, '.computed'), null)
-
-							if(!/Literal/.test(valueType) || !isComputed) { return }
-							if(name.slice(-1) === '.') { name = name.slice(0, -1) }
-
-							name += `[${object[key]}].`
-							return
-						}
-
-						let keyObject = null
-						let keyArguments = null
-
-						if(/\.callee\.name$/.test(key)) {
-							// handle function inside of brackets
-							keyObject = _get(node, key.replace(/\.property\.callee\.name$/, ''), null)
-							keyArguments = _get(node, key.replace(/\.callee\.name$/, '.arguments'), null)
-						} else {
-							keyObject = _get(node, key.replace(/\.property\.name$/, ''), null)
-							keyArguments = _get(node, key.replace(/\.callee\.property\.name$/, '.arguments'), null)
-						}
-
-						const getArguments = keyArguments => {
-							const args = keyArguments.map(arg => {
-								const raw = (arg.extra || { }).raw
-
-								if(arg.type === 'NullLiteral') {
-									return 'null'
-								}
-
-								return (raw || arg.value || arg.name)
-							})
-
-							return args.length === 0 ? '()' : `(...${args})`
-						}
-
-						if(base === '') {
-							const args = _get(node, key.replace(/\.callee\.name$/, '.arguments'), null)
-
-							base += (Array.isArray(args) ? `${object[key]}${getArguments(args)}` : object[key])
-						} else if(keyObject.computed) {
-							if(name.slice(-1) === '.') { name = name.slice(0, -1) }
-
-							// eslint-disable-next-line max-len
-							name += (Array.isArray(keyArguments) ? `[${object[key]}${getArguments(keyArguments)}].` : `[${object[key]}].`)
-						} else if(Array.isArray(keyArguments)) {
-							throw new TypeError('hasNil does not support chained function calls using dot notation')
-						} else {
-							name += `${object[key]}.`
-						}
-					})
-
-					name = name.replace(/.$/, '')
-
-					const hasNilWrapper = addHasNilHelper.call(state.file).name
-
-					if(name !== '' && (name.slice(0, 1) !== '[')) {
-						name = `.${name}`
 					}
 
-					/* eslint no-void: 0 */
-					path.replaceWithSourceString(`${hasNilWrapper}(${base})${name}()`)
+					const isNotNameOrRawValue = !/.name$/.test(key) && !/.extra.raw$/.test(key)
+
+					if(isNotNameOrRawValue || /arguments/.test(key) || object[key] === 'hasNil') {
+						return
+					}
+
+					// Handle literals such as an array index
+					if(/.extra.raw$/.test(key)) {
+						const valueType = _get(node, key.replace(/.extra.raw$/, '.type'), null)
+						const isComputed = _get(node, key.replace(/.property.extra.raw$/, '.computed'), null)
+
+						if(!/Literal/.test(valueType) || !isComputed) { return }
+						if(name.slice(-1) === '.') { name = name.slice(0, -1) }
+
+						name += `[${object[key]}].`
+						return
+					}
+
+					let keyObject = null
+					let keyArguments = null
+
+					if(/\.callee\.name$/.test(key)) {
+						// handle function inside of brackets
+						keyObject = _get(node, key.replace(/\.property\.callee\.name$/, ''), null)
+						keyArguments = _get(node, key.replace(/\.callee\.name$/, '.arguments'), null)
+					} else {
+						keyObject = _get(node, key.replace(/\.property\.name$/, ''), null)
+						keyArguments = _get(node, key.replace(/\.callee\.property\.name$/, '.arguments'), null)
+					}
+
+					const getArguments = keyArguments => {
+						const args = keyArguments.map(arg => {
+							const raw = (arg.extra || { }).raw
+
+							if(arg.type === 'NullLiteral') {
+								return 'null'
+							}
+
+							return (raw || arg.value || arg.name)
+						})
+
+						return args.length === 0 ? '()' : `(...${args})`
+					}
+
+					if(base === '') {
+						const args = _get(node, key.replace(/\.callee\.name$/, '.arguments'), null)
+
+						base += (Array.isArray(args) ? `${object[key]}${getArguments(args)}` : object[key])
+					} else if(keyObject.computed) {
+						if(name.slice(-1) === '.') { name = name.slice(0, -1) }
+
+						// eslint-disable-next-line max-len
+						name += (Array.isArray(keyArguments) ? `[${object[key]}${getArguments(keyArguments)}].` : `[${object[key]}].`)
+					} else if(Array.isArray(keyArguments)) {
+						throw new TypeError('hasNil does not support chained function calls using dot notation')
+					} else {
+						name += `${object[key]}.`
+					}
+				})
+
+				name = name.replace(/.$/, '')
+
+				const hasNilWrapper = addHasNilHelper.call(state.file).name
+
+				if(name !== '' && (name.slice(0, 1) !== '[')) {
+					name = `.${name}`
 				}
+
+				/* eslint no-void: 0 */
+				path.replaceWithSourceString(`${hasNilWrapper}(${base})${name}()`)
 			}
 		}
 	}
