@@ -33,6 +33,10 @@ if(house.kitchen.drawer[3].hasNil) {	/* true */
 	console.log('this will run')
 }
 
+if(house[goTo(kitchen)].drawer[3]['sub-drawer'].forks.hasNil) {	/* true */
+	console.log('this will run')
+}
+
 if(house.basement.closet[3].hasNil) {	/* true */
 	console.log('this will run')
 }

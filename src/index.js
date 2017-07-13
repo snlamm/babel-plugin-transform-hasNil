@@ -10,7 +10,7 @@ const hasNilWrapper = template(`
 			let parts = [ base ]
 
 			const proxy = new Proxy(function() {
-				let result = parts.splice(0, 1)
+				let result = parts.shift()
 
 				for(const part of parts) {
 					if(result === null || typeof result === \'undefined\') {
@@ -150,9 +150,7 @@ export default function() {
 							// eslint-disable-next-line max-len
 							name += (Array.isArray(keyArguments) ? `[${object[key]}${getArguments(keyArguments)}].` : `[${object[key]}].`)
 						} else if(Array.isArray(keyArguments)) {
-							if(name.slice(-1) === '.') { name = name.slice(0, -1) }
-
-							name += `[${object[key]}${getArguments(keyArguments)}].`
+							throw new TypeError('hasNil does not support chained function calls using dot notation')
 						} else {
 							name += `${object[key]}.`
 						}
