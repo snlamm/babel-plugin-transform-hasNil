@@ -12,7 +12,7 @@ This plugin is inspired by [babel-plugin-transform-isNil](https://github.com/Max
 
 ```js
 const house = { kitchen: { drawer: [ ] } }
-const d = 'drawer'
+const drawer = 'drawer'
 const goTo = function(location) {
 	return location
 }
@@ -21,22 +21,27 @@ if(house.kitchen.hasNil) {	/* false */
 	console.log('this will not run')
 }
 
+// with a string literal
 if(house["kitchen"].hasNil) {	/* false */
 	console.log('this will not run')
 }
 
-if(house.kitchen[d].hasNil) {	/* false */
+// with a variable
+if(house.kitchen[drawer].hasNil) {	/* false */
 	console.log('this will not run')
 }
 
+// with a function using bracket notation
 if(house[goTo(kitchen)].drawer.hasNil) {	/* false */
 	console.log('this will not run')
 }
 
+// with a number literal
 if(house.kitchen.drawer[3].hasNil) {	/* true */
 	console.log('this will run')
 }
 
+// you can chain as many properties as you want
 if(house[goTo(kitchen)].drawer[3]['sub-drawer'].forks.hasNil) {	/* true */
 	console.log('this will run')
 }
@@ -57,3 +62,23 @@ if((house || { }).hasNil) {	/* will not work */
 	console.log('this will not work')
 }
 ```
+
+## Installation
+First, add the `babel-plugin-transform-hasnil` package via your preferred package manager:
+
+```shell
+npm install --save-dev plugin-grind-mixins
+```
+
+Then register with babel, such as by using the `.babelrc` file.
+
+```json
+{
+	"plugins": [ "babel-plugin-transform-hasnil" ]
+}
+```
+
+## Contributing
+Contributions are always welcome. You are encouraged to open issues and merge requests.
+
+To run the tests, use `npm run test`.
