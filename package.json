@@ -1,49 +1,49 @@
 {
-	"name": "babel-plugin-transform-hasnil",
-	"version": "0.1.0",
-	"description": "use hasNil to traverse chained object properties and check for null or undefined values",
-	"main": "src/index.js",
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/snlamm/babel-plugin-transform-hasNil.git"
-	},
-	"author": "Shmuel Lamm (@snlamm)",
-	"license": "MIT",
-	"devDependencies": {
-		"ava": "^0.20.0",
-		"ava-spec": "^1.1.0",
-		"babel-cli": "^6.24.1",
-		"babel-core": "^6.25.0",
-		"babel-eslint": "^7.2.3",
-		"babel-preset-env": "^1.6.0",
-		"babel-register": "^6.24.1",
-		"babylon": "^6.17.4",
-		"eslint": "^4.2.0",
-		"eslint-config-grind": "^2.0.0",
-		"flat": "^2.0.1",
-		"lodash.get": "^4.4.2"
-	},
-	"keywords": [
-		"hasNil",
-		"babel",
-		"plugin",
-		"null",
-		"undefined",
-		"object",
-		"properties",
-		"traverse"
-	],
-	"scripts": {
-		"prepublish": "bin/build",
-		"lint": "eslint src",
-		"pretest": "npm run prepublish",
-		"test": "ava --verbose"
-	},
-	"ava": {
-		"require": [
-			"babel-register",
-			"babel-polyfill"
-		],
-		"babel": "inherit"
-	}
+  "name": "babel-plugin-transform-hasnil",
+  "version": "0.1.1",
+  "description": "use hasNil to traverse chained object properties and check for null or undefined values",
+  "main": "src/index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/snlamm/babel-plugin-transform-hasNil.git"
+  },
+  "author": "Shmuel Lamm (@snlamm)",
+  "license": "MIT",
+  "devDependencies": {
+    "ava": "^0.20.0",
+    "ava-spec": "^1.1.0",
+    "babel-cli": "^6.24.1",
+    "babel-core": "^6.25.0",
+    "babel-eslint": "^7.2.3",
+    "babel-preset-env": "^1.6.0",
+    "babel-register": "^6.24.1",
+    "babylon": "^6.17.4",
+    "eslint": "^4.2.0",
+    "eslint-config-grind": "^2.0.0",
+    "flat": "^2.0.1",
+    "lodash.get": "^4.4.2"
+  },
+  "keywords": [
+    "hasNil",
+    "babel",
+    "plugin",
+    "null",
+    "undefined",
+    "object",
+    "properties",
+    "traverse"
+  ],
+  "scripts": {
+    "prepublish": "bin/build",
+    "lint": "eslint src",
+    "pretest": "npm run prepublish",
+    "test": "ava --verbose"
+  },
+  "ava": {
+    "require": [
+      "babel-register",
+      "babel-polyfill"
+    ],
+    "babel": "inherit"
+  }
 }
