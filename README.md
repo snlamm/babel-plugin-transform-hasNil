@@ -68,7 +68,7 @@ if((house || { }).hasNil) {	/* will not work */
 First, add the `babel-plugin-transform-hasnil` package via your preferred package manager:
 
 ```shell
-npm install --save-dev plugin-grind-mixins
+npm install --save-dev babel-plugin-transform-hasnil
 ```
 
 Then register with babel, such as by using the `.babelrc` file.
