@@ -1,6 +1,7 @@
 # babel-plugin-transform-hasNil
 
 <a href="https://travis-ci.org/snlamm/babel-plugin-transform-hasNil"><img src="https://travis-ci.org/snlamm/babel-plugin-transform-hasNil.svg?branch=master" alt="Build Status"></a>
+<a href='https://coveralls.io/github/snlamm/babel-plugin-transform-hasNil?branch=master'><img src='https://coveralls.io/repos/github/snlamm/babel-plugin-transform-hasNil/badge.svg?branch=master' alt='Coverage Status' /></a>
 <a href="https://www.npmjs.com/package/babel-plugin-transform-hasnil"><img src="https://img.shields.io/npm/v/babel-plugin-transform-hasnil.svg" alt="NPM Version"></a>
 <a href="https://www.npmjs.com/package/babel-plugin-transform-hasnil"><img src="https://img.shields.io/npm/l/babel-plugin-transform-hasnil.svg" alt="License"></a>
 
