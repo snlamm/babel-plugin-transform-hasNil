@@ -18,10 +18,12 @@
     "babel-preset-env": "^1.6.0",
     "babel-register": "^6.24.1",
     "babylon": "^6.17.4",
+    "coveralls": "^2.13.1",
     "eslint": "^4.2.0",
     "eslint-config-grind": "^2.0.0",
     "flat": "^2.0.1",
-    "lodash.get": "^4.4.2"
+    "lodash.get": "^4.4.2",
+    "nyc": "^11.0.3"
   },
   "keywords": [
     "hasNil",
@@ -37,7 +39,9 @@
     "prepublish": "bin/build",
     "lint": "eslint src",
     "pretest": "npm run prepublish",
-    "test": "ava --verbose"
+    "test": "ava --verbose",
+		"test-nyc": "nyc ava --verbose",
+		"coverage": "nyc report --reporter=text-lcov | coveralls"
   },
   "ava": {
     "require": [
