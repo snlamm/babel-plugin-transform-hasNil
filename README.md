@@ -23,7 +23,7 @@ if(house.kitchen.hasNil) {	/* false */
 }
 
 // with a string literal
-if(house["kitchen"].hasNil) {	/* false */
+if(house['kitchen'].hasNil) {	/* false */
 	console.log('this will not run')
 }
 
@@ -33,7 +33,7 @@ if(house.kitchen[drawer].hasNil) {	/* false */
 }
 
 // with a function using bracket notation
-if(house[goTo(kitchen)].drawer.hasNil) {	/* false */
+if(house[goTo('kitchen')].drawer.hasNil) {	/* false */
 	console.log('this will not run')
 }
 
@@ -78,6 +78,40 @@ Then register with babel, such as by using the `.babelrc` file.
 	"plugins": [ "babel-plugin-transform-hasnil" ]
 }
 ```
+
+## Benchmarking
+Summary: using `hasNil` is not as fast as using pure logical operators or `isNil` (which compiles to the same thing). In general, however, this should only impact you if you're looping > 10,000 times.
+
+Here's a benchmark:
+```js
+const entry = { first: { second: [ { third: { fourth: { } } } ] } }
+```
+
+The goal is to determine whether `first.second[0].third.fourth` returns `null` or `undefined`.
+
+Operator logic:
+```js
+(entry === null) || (entry === undefined) || (entry.first === null) || (entry.first === undefined) || (entry.first.second === null) || (entry.first.second === undefined) || (entry.first.second[0] === null) || (entry.first.second[0] === undefined) || (entry.first.second[0].third === null) || (entry.first.second[0].third === undefined) || (entry.first.second[0].third.fourth === null) || (entry.first.second[0].third.fourth === undefined)
+```
+
+isNil logic (does not support number literals such as `[0]`):
+```js
+entry.isNil || entry.first.isNil || entry.first.second.isNil || (entry.first.second[0] === null) || (entry.first.second[0] === undefined) || (entry.first.second[0].third === null) || (entry.first.second[0].third === undefined) || (entry.first.second[0].third.fourth === null) || (entry.first.second[0].third.fourth === undefined)
+```
+
+hasNil logic:
+```js
+entry.first.second[0].third.fourth.hasNil
+```
+
+Results:
+
+| cycles  | operator | isNil | hasNil |
+|---------|----------|-------|--------|
+| 100     | 0 ms     | 0 ms  | 0 ms   |
+| 1,000   | 0        | 0     | 2      |
+| 10,000  | 1        | 1     | 24     |
+| 100,000 | 5        | 5     | 218    |
 
 ## Contributing
 Contributions are always welcome. You are encouraged to open issues and merge requests.
