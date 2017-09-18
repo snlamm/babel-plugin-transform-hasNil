@@ -65,6 +65,8 @@ if((house || { }).hasNil) {	/* will not work */
 ```
 
 ## Installation
+Due to [Babel not handling](http://babeljs.io/learn-es2015/#ecmascript-2015-features-proxies) the Proxy object, this plugin is only compatible with Node versions >= 6.0.0.
+
 First, add the `babel-plugin-transform-hasnil` package via your preferred package manager:
 
 ```shell
@@ -111,7 +113,6 @@ Results:
 | 100     | 0 ms     | 0 ms  | 0 ms   |
 | 1,000   | 0        | 0     | 2      |
 | 10,000  | 1        | 1     | 24     |
-| 100,000 | 5        | 5     | 218    |
 
 ## Contributing
 Contributions are always welcome. You are encouraged to open issues and merge requests.
