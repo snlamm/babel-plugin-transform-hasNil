@@ -125,3 +125,18 @@ test('Basic runtime test', t => {
 
 	t.is(result.code, transformedResult)
 })
+
+test('Class test using "this"', t => {
+	const before = `
+		class Foo {
+			constructor() { this.bar = { biz: { bin: { }}}}
+			baz() { return this.bar.biz.bin.hasNil }
+		}
+	`
+
+	const after = `"use strict";\n\n${helper}\n\nvar _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();\n\nfunction _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }\n\nvar Foo = function () {\n\tfunction Foo() {\n\t\t_classCallCheck(this, Foo);\n\n\t\tthis.bar = { biz: { bin: {} } };\n\t}\n\n\t_createClass(Foo, [{\n\t\tkey: "baz",\n\t\tvalue: function baz() {\n\t\t\treturn _hasNilWrapper(this).bar.biz.bin();\n\t\t}\n\t}]);\n\n\treturn Foo;\n}();`
+
+	const result = transform(before, options)
+
+	t.is(result.code, after)
+})
