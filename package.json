@@ -1,6 +1,6 @@
 {
   "name": "babel-plugin-transform-hasnil",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "use hasNil to traverse chained object properties and check for null or undefined values",
   "main": "index.js",
   "repository": {
