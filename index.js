@@ -1,8 +1,8 @@
 /* eslint-disable no-useless-escape */
-import flatten from 'flat'
-import _get from 'lodash.get'
-import template from 'babel-template'
-import * as t from 'babel-types'
+const flatten = require('flat')
+const _get = require('lodash.get')
+const template = require('babel-template')
+const t = require('babel-types')
 
 const hasNilWrapper = template(`
 	(
@@ -77,7 +77,7 @@ function addHasNilHelper() {
 	return uid
 }
 
-export default function() {
+module.exports = function() {
 	return {
 		visitor: {
 			MemberExpression(path, state) {
@@ -167,7 +167,6 @@ export default function() {
 					name = `.${name}`
 				}
 
-				/* eslint no-void: 0 */
 				path.replaceWithSourceString(`${hasNilWrapper}(${base})${name}()`)
 			}
 		}

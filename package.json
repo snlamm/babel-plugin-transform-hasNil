@@ -2,7 +2,7 @@
   "name": "babel-plugin-transform-hasnil",
   "version": "0.1.4",
   "description": "use hasNil to traverse chained object properties and check for null or undefined values",
-  "main": "lib/index.js",
+  "main": "index.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/snlamm/babel-plugin-transform-hasNil.git"
@@ -12,12 +12,9 @@
   "devDependencies": {
     "ava": "^0.20.0",
     "ava-spec": "^1.1.0",
-    "babel-cli": "^6.24.1",
     "babel-core": "^6.25.0",
-    "babel-eslint": "^7.2.3",
+    "babel-plugin-transform-runtime": "^6.23.0",
     "babel-preset-env": "^1.6.0",
-    "babel-register": "^6.24.1",
-    "babylon": "^6.17.4",
     "coveralls": "^2.13.1",
     "eslint": "^4.2.0",
     "eslint-config-grind": "^2.0.0",
@@ -36,18 +33,9 @@
     "traverse"
   ],
   "scripts": {
-    "prepublish": "bin/build",
-    "lint": "eslint src",
-    "pretest": "npm run prepublish",
+    "lint": "eslint index.js",
     "test": "ava --verbose",
     "test-nyc": "nyc ava --verbose",
     "coverage": "nyc report --reporter=text-lcov | coveralls"
-  },
-  "ava": {
-    "require": [
-      "babel-register",
-      "babel-polyfill"
-    ],
-    "babel": "inherit"
   }
 }
