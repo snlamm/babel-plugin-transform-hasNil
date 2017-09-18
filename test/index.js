@@ -1,8 +1,7 @@
 /* eslint-disable max-len */
-import test from 'ava'
-import { transform } from 'babel-core'
-
-import plugin from '../lib/index'
+const test = require('ava')
+const transform = require('babel-core').transform
+const plugin = require('../index')
 
 const options = {
 	presets: [
@@ -107,4 +106,22 @@ specs.forEach(spec => {
 test('Chaining a function throws a TypeError', t => {
 	const error = t.throws(() => transform('bar.hoge().foo.hasNil', options), TypeError)
 	t.is(error.message, 'unknown: hasNil does not support chained function calls using dot notation')
+})
+
+test('Basic runtime test', t => {
+	const runtime = require('babel-plugin-transform-runtime')
+	const optionsWithRuntime = {
+		presets: [
+			'env'
+		],
+		plugins: [
+			plugin,
+			runtime
+		]
+	}
+
+	const result = transform('foo[0].hasNil', optionsWithRuntime)
+	const transformedResult = '"use strict";\n\nvar _hasNilWrapper2 = require("babel-runtime/helpers/hasNilWrapper");\n\nvar _hasNilWrapper3 = _interopRequireDefault(_hasNilWrapper2);\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\n(0, _hasNilWrapper3.default)(foo)[0]();'
+
+	t.is(result.code, transformedResult)
 })
