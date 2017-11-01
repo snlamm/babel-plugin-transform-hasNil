@@ -17,7 +17,6 @@
     "babel-preset-env": "^1.6.0",
     "coveralls": "^2.13.1",
     "eslint": "^4.2.0",
-    "eslint-config-grind": "^2.0.0",
     "flat": "^2.0.1",
     "lodash.get": "^4.4.2",
     "nyc": "^11.0.3"
